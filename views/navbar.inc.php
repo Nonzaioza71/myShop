@@ -34,35 +34,35 @@
                     <ul class="navbar-nav me-auto mb-2 mt-2 mb-lg-0 justify-content-around">
 
                         <li class="nav-item">
-                            <a class="nav-link text-green-600" href="#">3D</a>
+                            <a class="nav-link text-green-600" href="?app=home#view=on_sale&type=3d">3D</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-green-600" href="#">2D</a>
+                            <a class="nav-link text-green-600" href="?app=home#view=on_sale&type=2d">2D</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-green-600" href="#">Audio</a>
+                            <a class="nav-link text-green-600" href="?app=home#view=on_sale&type=audio">Audio</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-green-600" href="#">AI</a>
+                            <a class="nav-link text-green-600" href="?app=home#view=on_sale&type=ai">AI</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-green-600" href="#">Essentials</a>
+                            <a class="nav-link text-green-600" href="?app=home#view=on_sale&type=essentials">Essentials</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-green-600" href="#">Templates</a>
+                            <a class="nav-link text-green-600" href="?app=home#view=on_sale&type=templates">Templates</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-green-600" href="#">Tools</a>
+                            <a class="nav-link text-green-600" href="?app=home#view=on_sale&type=tools">Tools</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-green-600" href="#">VFX</a>
+                            <a class="nav-link text-green-600" href="?app=home#view=on_sale&type=vfx">VFX</a>
                         </li>
 
                         <li class="nav-item">

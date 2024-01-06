@@ -5,9 +5,13 @@
     // header("Refresh:0");
     // new HotReloader\HotReloader('http://localhost/myShop/phrwatcher.php');
     require_once('models/CoreModel.php');
+
+    if(array_key_exists('action', $_POST)) $_POST['action']($_POST);
     $product_type_list = getProductTypesList(null);
     $product_promotion_list = getProductPromotionsList(null);
     $product_tags_list = getProductTagsList(null);
+    $products = getProductsBy(null);
+
     require_once('views/header.inc.php');
     require_once('views/body.inc.php');
     require_once('views/loading.inc.php');

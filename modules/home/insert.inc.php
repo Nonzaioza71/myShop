@@ -5,7 +5,8 @@
         Insert a <?= $_GET['type'] ?> product
     </h1>
     <div class="card shadow rounded-0 col-md-12 mt-3 p-3">
-        <form method="post">
+        <form method="post" onkeydown="return event.key != 'Enter';">
+            <input type="hidden" name="action" value="insertProduct">
             <div class="col-md-12 row mb-3">
 
                 <div class="form-group col-md-4">
@@ -65,7 +66,7 @@
                         <div class="col-md-4 pe-0">
                             <label for="product_images">Product Images</label>
                             <input class="form-control" type="file" id="file_input" multiple>
-                            <input type="text" name="product_images" id="product_image">
+                            <input type="hidden" name="product_images" id="product_images" value="[]">
                         </div>
                     </div>
                 </div>
@@ -79,13 +80,16 @@
                         <div class="col-md-6">
                             <p class="fs-5 fw-bold">Preview Iframe</p>
                             <div class="col-md-12 row">
-                                <iframe onload="loadSuccess(false)" id="product_iframe_preview" class="w-full" style="height:calc(90vw / 2)" title="Low Poly Knight" frameborder="0" mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src=""> </iframe>
+                                <iframe id="product_iframe_preview" class="w-full" style="height: 40vh;" title="Low Poly Knight" frameborder="0" mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src=""> </iframe>
                             </div>
                         </div>
                     </div>
 
                 </div>
 
+            </div>
+            <div class="d-flex justify-content-end">
+                <button class="rounded-lg border bg-green-400 text-black hover:bg-green-500 hover:shadow p-2 ps-4 pe-4" type="submit">Add Product</button>
             </div>
         </form>
     </div>
@@ -153,6 +157,9 @@
         const preview = document.querySelector("#preview");
         const files = document.querySelector("input[type=file]").files;
 
+        document.querySelectorAll("#preImageChild").forEach(item=>item.remove())
+        document.querySelector('#product_images').value = "[]"
+
         function readAndPreview(file) {
             // Make sure `file.name` matches our extensions criteria
             if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
@@ -168,9 +175,16 @@
                         const newDiv = document.createElement('div')
                         const newImg = document.createElement('img')
 
+                        const product_images = JSON.parse(document.querySelector('#product_images').value)
+
                         newDiv.setAttribute("class", "col-md-2")
+                        newDiv.id = "preImageChild"
                         newImg.setAttribute("class", "w-full rounded-lg")
                         newImg.setAttribute("src", result)
+                        product_images.push(result)
+
+                        document.querySelector('#product_images').value = JSON.stringify(product_images)
+
 
                         newDiv.append(newImg)
                         document.querySelector('#product_images_preview').append(newDiv)

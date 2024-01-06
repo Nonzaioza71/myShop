@@ -41,6 +41,7 @@
         if (!('view' in getHashParam())) {
             window.location.href = '#view=on_sale'
         }
+        document.querySelectorAll('.popular-child').forEach(item=>{item.style.height = document.querySelector("#templ").clientHeight + 'px'})
         loadSuccess(false);
     })
 </script>

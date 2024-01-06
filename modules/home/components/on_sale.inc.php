@@ -10,8 +10,8 @@
         <div class="w-full h-full mx-auto overflow-x-hidden overflow-y-hidden">
             <div id="slider_on_sale" class="h-full flex lg:gap-8 md:gap-6 gap-14 items-center justify-start transition ease-out duration-700">
 
-                <a href="?app=home&v=insert&type=3d" class="flex flex-shrink-0 relative w-25 md:w-full sm:w-auto shadow" >
-                    <img src="templates/assets/images/light-tech-bg.png" alt="black chair and white table" class="object-cover object-center w-full" />
+                <a href="?app=home&v=insert&type=3d" class="flex flex-shrink-0 relative w-25 md:w-full sm:w-auto shadow">
+                    <img id="templ" src="templates/assets/images/light-tech-bg.png" alt="black chair and white table" class="object-cover object-center w-full" />
                     <div class="bg-gray-800 bg-opacity-30 absolute w-full h-full p-6">
                         <h2 class="lg:text-xl leading-4 text-base lg:leading-5 text-white dark:text-gray-900">Add On Sale</h2>
                         <div class="flex h-full items-center pb-6">
@@ -19,6 +19,18 @@
                         </div>
                     </div>
                 </a>
+
+                <?php foreach ($products as $idx => $item) { ?>
+                    <a href="?app=home&v=detail&idx=<?=$idx?>" class="flex flex-shrink-0 relative w-25 md:w-full sm:w-auto shadow">
+                        <img src="<?= $item['image']?>" alt="black chair and white table" class="object-cover object-center w-full popular-child" />
+                        <div class="bg-gray-800 bg-opacity-30 absolute w-full h-full p-6">
+                            <h2 class="lg:text-xl leading-4 text-base lg:leading-5 text-white dark:text-gray-900"></h2>
+                            <div class="flex h-full pb-6">
+                                <h3 class="text-xl lg:text-2xl font-semibold leading-5 lg:leading-6 text-white dark:text-gray-900 mt-auto w-100 text-center"><?= $item['product_name']?></h3>
+                            </div>
+                        </div>
+                    </a>
+                <?php } ?>
 
             </div>
         </div>
