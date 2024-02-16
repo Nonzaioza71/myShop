@@ -1,9 +1,3 @@
-function _init_() {
-    loadTagA()
-    loadRoutes()
-    loadTablist()
-}
-
 function loadSuccess(toggle = true) {
     const bg_left = document.querySelector('#bg_left')
     const bg_right = document.querySelector('#bg_right')
@@ -117,21 +111,29 @@ let defaultTransform = 0;
 
 function goNext(e) {
     defaultTransform = defaultTransform - 398;
-    console.log(e.target.parentElement.getAttribute('control-slide'))
-    var slider = document.querySelector(e.target.parentElement.getAttribute('control-slide'));
-    if (Math.abs(defaultTransform) >= slider.scrollWidth / 1.7) defaultTransform = 0;
-    slider.style.transform = "translateX(" + defaultTransform + "px)";
+    // console.log(e.target.parentElement.getAttribute('control-slide'))
+    let slider = document.querySelector(e.target.parentElement.getAttribute('control-slide'));
+    if (slider) {
+        if (Math.abs(defaultTransform) >= slider.scrollWidth / 1.7) defaultTransform = 0;
+        slider.style.transform = "translateX(" + defaultTransform + "px)";
+    } else {
+        console.log('err', slider);
+        setTimeout(() => goNext(e), 10)
+    }
 }
-document.querySelectorAll('#next').forEach(item => item.addEventListener("click", goNext))
 
 function goPrev(e) {
-    console.log(e.target.parentElement)
-    var slider = document.querySelector(e.target.parentElement.getAttribute('control-slide'));
-    if (Math.abs(defaultTransform) === 0) defaultTransform = 0;
-    else defaultTransform = defaultTransform + 398;
-    slider.style.transform = "translateX(" + defaultTransform + "px)";
+    // console.log(e.target.parentElement)
+    let slider = document.querySelector(e.target.parentElement.getAttribute('control-slide'));
+    if (slider) {
+        if (Math.abs(defaultTransform) === 0) defaultTransform = 0;
+        else defaultTransform = defaultTransform + 398;
+        slider.style.transform = "translateX(" + defaultTransform + "px)";
+    } else {
+        console.log('err', slider);
+        setTimeout(() => goPrev(e), 10)
+    }
 }
-document.querySelectorAll('#prev').forEach(item => item.addEventListener("click", goPrev))
 
 const mybutton = document.getElementById("btn-back-to-top");
 
@@ -148,11 +150,151 @@ const scrollFunction = () => {
 const backToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
 };
-mybutton.addEventListener("click", backToTop);
 
 window.addEventListener("scroll", scrollFunction);
 
 
 window.addEventListener("load", () => _init_())
 
-console.log('hello world')
+// console.log('hello world')
+
+function _init_() {
+    loadTagA()
+    loadRoutes()
+    loadTablist()
+}
+
+
+function averageColor(imageElement) {
+
+    // Create the canvas element
+    let canvas
+        = document.createElement('canvas'),
+
+        // Get the 2D context of the canvas
+        context
+            = canvas.getContext &&
+            canvas.getContext('2d'),
+        imgData, width, height,
+        length,
+
+        // Define variables for storing
+        // the individual red, blue and
+        // green colors
+        rgb = { r: 0, g: 0, b: 0 },
+
+        // Define variable for the 
+        // total number of colors
+        count = 0;
+
+    // Set the height and width equal
+    // to that of the canvas and the image
+    height = canvas.height =
+        imageElement.naturalHeight ||
+        imageElement.offsetHeight ||
+        imageElement.height;
+    width = canvas.width =
+        imageElement.naturalWidth ||
+        imageElement.offsetWidth ||
+        imageElement.width;
+
+    // Draw the image to the canvas
+    context.drawImage(imageElement, 0, 0);
+
+    // Get the data of the image
+    imgData = context.getImageData(
+        0, 0, width, height);
+
+    // Get the length of image data object
+    length = imgData.data.length;
+
+    for (let i = 0; i < length; i += 4) {
+
+        // Sum all values of red colour
+        rgb.r += imgData.data[i];
+
+        // Sum all values of green colour
+        rgb.g += imgData.data[i + 1];
+
+        // Sum all values of blue colour
+        rgb.b += imgData.data[i + 2];
+
+        // Increment the total number of
+        // values of rgb colours
+        count++;
+    }
+
+    // Find the average of red
+    rgb.r
+        = Math.floor(rgb.r / count);
+
+    // Find the average of green
+    rgb.g
+        = Math.floor(rgb.g / count);
+
+    // Find the average of blue
+    rgb.b
+        = Math.floor(rgb.b / count);
+
+    return rgb;
+}
+
+// Function to set the background
+// color of the second div as 
+// calculated average color of image
+let rgb;
+
+// setTimeout(() => {
+//     rgb = averageColor(
+//         document.getElementById('img'));
+
+//     // Select the element and set its
+//     // background color
+//     document
+//         .getElementById("block")
+//         .style.backgroundColor =
+//         'rgb(' + rgb.r + ','
+//         + rgb.g + ','
+//         + rgb.b + ')';
+// }, 500)
+
+
+
+// function loadSimpleIcon() {
+//     const elements = document.querySelectorAll('simple-icon')
+//     if (elements.length > 0) {
+//         elements.forEach((item, idx) => {
+//             const iconEle = document.createElement('img')
+//             iconEle.src = `https://cdn.simpleicons.org/${item.getAttribute('name')}/${item.getAttribute('color') || 'black'}`
+//             const _classList = item.getAttribute('class')
+//             if (_classList) {
+//                 const allClass = _classList.split(' ')
+//                 allClass.forEach((jtem, jdx) => {
+//                     iconEle.classList.add(jtem)
+//                 })
+//             }
+//             const _styleList = item.getAttribute('style')
+//             if (_styleList) {
+//                 iconEle.setAttribute('style', _styleList);
+//             }
+//             item.after(iconEle)
+//             item.remove()
+//         })
+//     }
+// }
+
+function replaceUrlParam(url, paramName, paramValue) {
+    if (paramValue == null) {
+        paramValue = '';
+    }
+    var pattern = new RegExp('\\b(' + paramName + '=).*?(&|#|$)');
+    if (url.search(pattern) >= 0) {
+        return url.replace(pattern, '$1' + paramValue + '$2');
+    }
+    url = url.replace(/[?#]$/, '');
+    return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
+}
+
+function formatNumber(n) {
+    return (Math.round(n * 100) / 100).toLocaleString();
+}

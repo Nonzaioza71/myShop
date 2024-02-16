@@ -1,22 +1,46 @@
+<?php
+// print_r($_GET);
+$product = getProductByID($_GET);
+$data = $product['data'][0];
+$images = $product['images'];
+
+// echo "<pre>";
+// print_r($data);
+// echo "</pre>";
+?>
+
 <div class="rounded mt-4">
     <div id="carouselPreviewModel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carouselPreviewModel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselPreviewModel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <?php $controll_count = $data['product_iframe'] ? 1 : 0;
+            $controll_count = $controll_count + count($images);
+
+            for ($i = 0; $i < $controll_count; $i++) { ?>
+
+                <?php if ($i == 0) { ?>
+                    <button type="button" data-bs-target="#carouselPreviewModel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <?php } else { ?>
+                    <button type="button" data-bs-target="#carouselPreviewModel" data-bs-slide-to="<?= $i ?>" aria-label="Slide <?= $i + 1 ?>"></button>
+            <?php }
+            } ?>
         </div>
         <div class="carousel-inner">
 
-            <div class="carousel-item active">
-                <div class="w-full">
-                    <div class="sketchfab-embed-wrapper w-full">
-                        <iframe onload="loadSuccess(false)" class="w-full" style="height:calc(90vw / 2)" title="Low Poly Knight" frameborder="0" mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="https://sketchfab.com/models/4c9d5dd1740343a9b5b50a2bacd7ee32/embed"> </iframe>
+            <?php if ($data['product_iframe']) { ?>
+                <div class="carousel-item active">
+                    <div class="w-full">
+                        <div class="sketchfab-embed-wrapper w-full">
+                            <iframe onload="try{loadSuccess(false)}catch(e){}" class="w-full" style="height:calc(90vw / 2)" title="Low Poly Knight" frameborder="0" mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking execution-while-out-of-viewport execution-while-not-rendered web-share src="<?= $data['product_iframe'] ?>"> </iframe>
+                        </div>
                     </div>
                 </div>
-            </div>
+            <?php } ?>
 
-            <div class="carousel-item">
-                <img src="templates/assets/temps/knight_low_poly_preview.png" class="d-block w-100" style="height:calc(90vw / 2)" alt="...">
-            </div>
+            <?php foreach ($images as $idx => $item) { ?>
+                <div class="carousel-item">
+                    <img src="<?= $item['image'] ?>" class="d-block w-100" style="height:calc(90vw / 2)" alt="...">
+                </div>
+            <?php } ?>
 
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselPreviewModel" data-bs-slide="prev">
@@ -34,37 +58,24 @@
     <div class="col-md-8">
         <div class="pt-2">
             <div class="fw-bold text-start text-xl">
-                Low poly knight model and animations
+                <?= $data['product_name'] ?>
             </div>
             <div class="col-md-12 row">
                 <div class="col-md-6 d-flex mt-2 gap-3">
-                    <img src="templates/assets/temps/user.png" alt="Profile Image" style="width: 4rem; height: 4rem; overflow: hidden;">
+                    <img src="<?= $profile = $data['memberimage'] ? $data['memberimage'] : "templates/assets/temps/user.png" ?>" alt="Profile Image" style="width: 4rem; height: 4rem; overflow: hidden;">
                     <div class="d-grid">
-                        <span class="fw-bold text-lg mt-auto">Rakshaan</span>
-                        <span class="text-gray-300 text-sm mb-auto">300 follower</span>
+                        <span class="fw-bold text-lg mt-auto"><?= $data['membername'] ?></span>
+                        <span class="text-gray-400 text-sm mb-auto">300 follower</span>
                     </div>
                 </div>
                 <div class="col-md-6 text-end">
                     <div class="btn-group">
                         <button type="button" class="btn btn-outline-success">Subscript</button>
-                        <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent">
-                            <span class="visually-hidden">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuReference">
-                            <li><a class="dropdown-item" href="#">Subscript and alert</a></li>
-                            <li><a class="dropdown-item" href="#">Subscript only</a></li>
-                            <li><a class="dropdown-item" href="#">Ignore</a></li>
-                        </ul>
                     </div>
                 </div>
             </div>
             <div class="text-sm mt-4">
-                <pre>
-    <span class="fw-bold">Assets</span>
-        - Model
-    <span class="fw-bold">Animation</span>
-        - Walk 4 dir
-    </pre>
+                <pre style="white-space: pre-wrap;"><?= $data['product_detail'] ?></pre>
             </div>
         </div>
     </div>
@@ -73,32 +84,77 @@
         <div class="card shadow p-2 d-grid gap-2">
             <div class="col-md-12 d-flex justify-content-between">
                 <h2 class="text-end fw-bold text-xl">Price</h2>
-                <h2 class="text-end fw-bold text-xl">199.00฿</h2>
+                <h2 class="text-end fw-bold text-xl"><?= $data['product_price'] ?>$</h2>
             </div>
             <hr>
-            <button class="bg-green-300 hover:bg-green-400 text-green-800 font-bold py-2 px-4 rounded inline-flex items-center d-flex gap-2">
+            <button onclick="purchaseModal.show()" class="bg-green-300 hover:bg-green-400 text-green-800 font-bold py-2 px-4 rounded inline-flex items-center d-flex gap-2">
                 <i class="fa-solid fa-cart-shopping fill-current w-4 h-4 mr-2"></i>
                 <span>Purchase</span>
             </button>
-            <button class="bg-yellow-300 hover:bg-yellow-400 text-yellow-800 font-bold py-2 px-4 rounded inline-flex items-center d-flex gap-2">
-                <i class="fa-solid fa-cart-plus fill-current w-4 h-4 mr-2"></i>
-                <span>Add to cart</span>
-            </button>
-            <hr>
-            <button class="bg-pink-300 hover:bg-pink-400 text-pink-800 font-bold py-2 px-4 rounded inline-flex items-center d-flex gap-2">
-                <i class="fa-regular fa-star fill-current w-4 h-4 mr-2"></i>
-                <span>Add to favorite</span>
-            </button>
+            <?php if (array_key_exists('user', $_SESSION)) { ?>
+
+                <?php if (count(checkProductInCartByID($data)) > 0) { ?>
+                    <form method="post" class="w-full">
+                        <input type="hidden" name="action" value="deleteProductToCartByID">
+                        <input type="hidden" name="id" value="<?= $data['id'] ?>">
+                        <button type="submit" class="bg-yellow-300 hover:bg-yellow-400 text-yellow-800 font-bold py-2 px-4 rounded inline-flex items-center d-flex gap-2 w-full">
+                            <i class="fa-solid fa-check fill-current w-4 h-4 mr-2"></i>
+                            <span>Remove from cart</span>
+                        </button>
+                    </form>
+                <?php } else { ?>
+                    <form method="post" class="w-full">
+                        <input type="hidden" name="action" value="insertProductToCartByID">
+                        <input type="hidden" name="id" value="<?= $data['id'] ?>">
+                        <button type="submit" class="bg-yellow-300 hover:bg-yellow-400 text-yellow-800 font-bold py-2 px-4 rounded inline-flex items-center d-flex gap-2 w-full">
+                            <i class="fa-solid fa-cart-plus fill-current w-4 h-4 mr-2"></i>
+                            <span>Add to cart</span>
+                        </button>
+                    </form>
+                <?php } ?>
+
+                <hr>
+
+                <?php if (count(checkProductFavoriteByID($data)) > 0) { ?>
+                    <form method="post" class="w-full">
+                        <input type="hidden" name="action" value="deleteProductFavoriteByID">
+                        <input type="hidden" name="id" value="<?= $data['id'] ?>">
+                        <button type="submit" class="bg-pink-300 hover:bg-pink-400 text-pink-800 font-bold py-2 px-4 rounded inline-flex items-center d-flex gap-2 w-full">
+                            <i class="fa-regular fa-star fill-current w-4 h-4 mr-2"></i>
+                            <span>Remove from favorite</span>
+                        </button>
+                    </form>
+                <?php } else { ?>
+                    <form method="post" class="w-full">
+                        <input type="hidden" name="action" value="insertProductToFavoriteByID">
+                        <input type="hidden" name="id" value="<?= $data['id'] ?>">
+                        <button type="submit" class="bg-pink-300 hover:bg-pink-400 text-pink-800 font-bold py-2 px-4 rounded inline-flex items-center d-flex gap-2 w-full">
+                            <i class="fa-regular fa-star fill-current w-4 h-4 mr-2"></i>
+                            <span>Add to favorite</span>
+                        </button>
+                    </form>
+                <?php } ?>
+
+            <?php } else { ?>
+                <button class="bg-yellow-300 hover:bg-yellow-400 text-yellow-800 font-bold py-2 px-4 rounded inline-flex items-center d-flex gap-2" onclick="window.location.href = '?app=auth'">
+                    <i class="fa-regular fa-star fill-current w-4 h-4 mr-2"></i>
+                    <span>Add to cart</span>
+                </button>
+                <hr>
+                <button class="bg-pink-300 hover:bg-pink-400 text-pink-800 font-bold py-2 px-4 rounded inline-flex items-center d-flex gap-2" onclick="window.location.href = '?app=auth'">
+                    <i class="fa-regular fa-star fill-current w-4 h-4 mr-2"></i>
+                    <span>Add to favorite</span>
+                </button>
+            <?php } ?>
+            <?php if (@checkPerm($permission, 'product_update')) { ?>
+                <a href="?app=home&v=update&idx=<?= $data['id'] ?>&type=<?= $data['product_type_name'] ?>" class="bg-blue-300 hover:bg-blue-400 text-blue-800 font-bold py-2 px-4 rounded inline-flex items-center d-flex gap-2">
+                    <i class="fa-regular fa-edit fill-current w-4 h-4 mr-2"></i>
+                    <span>Edit Product</span>
+                </a>
+            <?php } ?>
 
         </div>
     </div>
 </div>
 
-<div>
-    <p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;">
-        <a href="https://sketchfab.com/3d-models/low-poly-knight-4c9d5dd1740343a9b5b50a2bacd7ee32?utm_medium=embed&utm_campaign=share-popup&utm_content=4c9d5dd1740343a9b5b50a2bacd7ee32" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;"> Low Poly Knight </a>
-        Import by
-        <a href="https://sketchfab.com/rakshaan?utm_medium=embed&utm_campaign=share-popup&utm_content=4c9d5dd1740343a9b5b50a2bacd7ee32" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;"> Rakshaan </a>
-        on <a href="https://sketchfab.com?utm_medium=embed&utm_campaign=share-popup&utm_content=4c9d5dd1740343a9b5b50a2bacd7ee32" target="_blank" rel="nofollow" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a>
-    </p>
-</div>
+<?php require_once(__DIR__ . "/purchase.inc.php"); ?>

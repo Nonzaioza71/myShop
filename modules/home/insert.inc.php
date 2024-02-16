@@ -1,4 +1,8 @@
-<?php if (!array_key_exists('type', $_GET)) header("Location: index.php"); ?>
+<?php if (!array_key_exists('type', $_GET)) {
+    header("Location: index.php");
+}
+
+checkAuthed(checkPerm($permission, 'product_insert')); ?>
 
 <div class="col-md-12">
     <h1 class="fw-bold fs-4">
@@ -55,7 +59,7 @@
                                 <div class="col-md-12 border d-flex mt-5 p-2" id="tag_list"></div>
                             </div>
 
-                            <input type="hidden" name="product_tags" id="product_tags">
+                            <input type="text" name="product_tags" id="product_tags">
                         </div>
                     </div>
                     <div class="col-md-12 d-flex row m-auto">
@@ -66,7 +70,7 @@
                         <div class="col-md-4 pe-0">
                             <label for="product_images">Product Images</label>
                             <input class="form-control" type="file" id="file_input" multiple>
-                            <input type="hidden" name="product_images" id="product_images" value="[]">
+                            <input type="text" name="product_images" id="product_images" value="[]">
                         </div>
                     </div>
                 </div>
@@ -154,46 +158,49 @@
     })
 
     function previewFiles() {
+        console.log('1');
         const preview = document.querySelector("#preview");
-        const files = document.querySelector("input[type=file]").files;
+        const files = document.querySelector("#file_input").files;
 
-        document.querySelectorAll("#preImageChild").forEach(item=>item.remove())
-        document.querySelector('#product_images').value = "[]"
+        // if(document.querySelectorAll("#preImageChild")) document.querySelectorAll("#preImageChild").forEach(item=>item.remove())
+        // document.querySelector('#product_images').value = "[]"
 
         function readAndPreview(file) {
+            console.log(5);
             // Make sure `file.name` matches our extensions criteria
-            if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
-                const reader = new FileReader();
+            // if (/\.(jpe?g|png|gif)$/i.test(file.name)) {
+            const reader = new FileReader();
+            console.log('3');
+            reader.addEventListener(
+                "load",
+                () => {
+                    const {
+                        result
+                    } = reader
+                    console.log('2');
 
-                reader.addEventListener(
-                    "load",
-                    () => {
-                        const {
-                            result
-                        } = reader
+                    const newDiv = document.createElement('div')
+                    const newImg = document.createElement('img')
 
-                        const newDiv = document.createElement('div')
-                        const newImg = document.createElement('img')
+                    const product_images = JSON.parse(document.querySelector('#product_images').value)
 
-                        const product_images = JSON.parse(document.querySelector('#product_images').value)
+                    newDiv.setAttribute("class", "col-md-2")
+                    newDiv.id = "preImageChild"
+                    newImg.setAttribute("class", "w-full rounded-lg")
+                    newImg.setAttribute("src", result)
+                    product_images.push(result)
 
-                        newDiv.setAttribute("class", "col-md-2")
-                        newDiv.id = "preImageChild"
-                        newImg.setAttribute("class", "w-full rounded-lg")
-                        newImg.setAttribute("src", result)
-                        product_images.push(result)
-
-                        document.querySelector('#product_images').value = JSON.stringify(product_images)
+                    document.querySelector('#product_images').value = JSON.stringify(product_images)
 
 
-                        newDiv.append(newImg)
-                        document.querySelector('#product_images_preview').append(newDiv)
-                    },
-                    false,
-                );
+                    newDiv.append(newImg)
+                    document.querySelector('#product_images_preview').append(newDiv)
+                },
+                false,
+            );
 
-                reader.readAsDataURL(file);
-            }
+            reader.readAsDataURL(file);
+            // }
         }
 
         if (files) {
